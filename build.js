@@ -2,19 +2,15 @@ const path = require('path');
 const builder = require('electron-builder');
 
 builder.build({
+    projectDir: path.resolve(__dirname),
 
-    projectDir: path.resolve(__dirname),  // 專案路徑 
-
-    win: ['nsis', 'portable'],  // nsis . portable
+    win: ['nsis', 'portable'], 
     config: {
-        "appId": "ChrisLin1997.electron.traceSpend",
-        "productName": "trace spending", // 應用程式名稱 ( 顯示在應用程式與功能 )
-        "directories": {
-            "output": "build/win"
-        },
-        "win": {
-            "icon": path.resolve(__dirname, 'icon.png'),
-        }
+        "appId": "com.cilent.app.electronbuild",
+        "productName": "trace spending",
+        "directories": { "output": "build" },
+        "win": { "icon": path.resolve(__dirname, 'icon.png') },
+        "mac": { "icon": path.resolve(__dirname, 'icon.png') },
     },
 })
   .then(
