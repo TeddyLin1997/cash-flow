@@ -8,11 +8,12 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
   },
   "main": "background.js",
   "dependencies": {
     "dayjs": "^1.10.4",
+    "electron-builder": "^22.9.1",
     "element-plus": "^1.0.2-beta.31",
     "file-saver": "^2.0.5",
     "pug": "^3.0.0",
