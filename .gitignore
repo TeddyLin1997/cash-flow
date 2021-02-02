@@ -1,4 +1,4 @@
 node_modules
-
-#Electron-builder output
+.DS_Store/
+.gitignore
 /dist_electron
