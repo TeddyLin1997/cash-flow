@@ -1,23 +1,22 @@
 <template lang="pug">
 .index
-  .table
-    h3 收支明細
-    el-table(:data="allDataList")
-      el-table-column(label="日期" prop="date")
-        template(v-slot="scope")
-          span {{ scope.row.date }}
-      el-table-column(label="項目" prop="name")
-      el-table-column(label="類型" prop="moneyType" align="center")
-      el-table-column(label="收支" prop="type" align="center")
-        template(v-slot="scope")
-          span(:class="typeColor(scope.row.type)") {{ scope.row.type }}
-      el-table-column(label="金額" prop="money" align="right")
-        template(v-slot="scope")
-          span {{ scope.row.type === '支出' ? '-' : '' }} {{ scope.row.money }}
-
+  el-table(:data="allDataList" show-summary :summary-method="summaryMethod" height="634px")
+    el-table-column(label="日期" prop="date")
+      template(v-slot="scope")
+        span {{ scope.row.date }}
+    el-table-column(label="項目" prop="name")
+    el-table-column(label="類型" prop="moneyType" align="center")
+    el-table-column(label="收支" prop="type" align="center")
+      template(v-slot="scope")
+        span(:class="typeColor(scope.row.type)") {{ scope.row.type }}
+    el-table-column(label="金額" prop="money" align="right")
+    el-table-column(label="操作" prop="operate" align="center")
+      template(v-slot="scope")
+        el-button(type="text" @click="deleteItem(scope.row)")
+          i.el-icon-delete
+  
   .form
     .title
-      span 輸入列 &nbsp
       el-checkbox(v-model="isClear") 新增後清除
     .form-item
       label 日期
@@ -32,7 +31,7 @@
         el-option(v-for="item of typeList" :value="item")
     .form-item
       label 項目
-      el-input(v-model="detailForm.name" size="small" placeholder="請輸入")
+      el-input(v-model="detailForm.name" size="small" placeholder="請輸入" @keypress.enter="addItem(detailForm)")
     .form-item
       label 金額
       el-input(v-model="detailForm.money" type="number" placeholder="輸入金額" size="small" @keyup.enter="addItem(detailForm)")
@@ -44,11 +43,13 @@
 </template>
 
 <script>
+import { ElMessage } from 'element-plus'
 import { ref, reactive, watchEffect, computed } from 'vue'
+import useWorkBook from '@/workbook'
+import { getToday } from '@/helper'
 import { saveAs } from 'file-saver';
 import dayjs from 'dayjs'
 import XLSX from 'xlsx'
-import { useWorkBook } from '@/workbook'
 
 const typeList = ['收入', '支出']
 const moneyTypeList = ['食', '衣', '住', '行', '娛樂', '其他']
@@ -66,12 +67,6 @@ export default {
   setup () {
     // create workbook
     const workbook = useWorkBook()
-    // file
-    const file = ref(undefined)
-    const handleFile = async (event) => {
-      file.value = event.target.files[0]
-      await reader.readAsArrayBuffer(file.value)
-    }
 
     // reader
     const reader = new FileReader()
@@ -81,29 +76,60 @@ export default {
       allDataList.value = convertExcel(data)
     }
 
-    // export data
+    // import
+    const file = ref(undefined)
+    const handleFile = async (event) => {
+      file.value = event.target.files[0]
+      await reader.readAsArrayBuffer(file.value)
+    }
+
+    // export
     const exportData = computed(() => convertExcel(allDataList.value, 'out'))
 
+    const exportExcel = () => {
+      workbook.Sheets['sheet1'] = XLSX.utils.json_to_sheet(exportData.value, { header: Object.keys(thead), skipHeader: false })
+      workbook.SheetNames = Object.keys(workbook.Sheets)
+      const blob = new Blob([changeToBlob(workbook)])
+      const file = new File([blob], 'workbook.xlsx')
+      saveAs(file)
+    }
+
+    const changeToBlob = (workbook) => {
+      const rawData = XLSX.write(workbook, { bookType: 'xlsx', bookSST: false, type: 'binary' })
+      const aryBuf = new ArrayBuffer(rawData.length)
+      const view = new Uint8Array(aryBuf)
+      for (var i = 0; i != rawData.length; ++i) view[i] = rawData.charCodeAt(i) & 0xFF
+      return aryBuf
+    }
+
+    
     // data
     const allDataList = ref([])
     const detailForm = reactive({
-      date: '',
+      date: getToday(),
       name: '',
-      moneyType: '',
-      type: '',
+      moneyType: '食',
+      type: '支出',
       money: '',
     })
 
     // add
     const addItem = (formData) => {
+      if (Object.values(detailForm).includes('')) return ElMessage.warning('內容輸入不完整')
       const item = { ...formData }
+      if (item.type === '支出') item.money = -item.money
       item.date = dayjs(item.date).format('YYYY/MM/DD')
       allDataList.value.push(item)
       clearDetailForm()
     }
 
+    const deleteItem = (row) => {
+      const targetIndex = allDataList.value.findIndex(item => item === row)
+      allDataList.value.splice(targetIndex, 1)
+    }
+
     // clear
-    const isClear = ref(true)
+    const isClear = ref(false)
     const clearDetailForm = () => {
       if (isClear.value) {
         detailForm.date = ''
@@ -114,24 +140,11 @@ export default {
       }
     }
 
-    // export
-    const exportExcel = () => {
-      workbook.SheetNames.push('sheet1')
-      workbook.Sheets['sheet1'] = XLSX.utils.json_to_sheet(exportData.value, { header: Object.keys(thead), skipHeader: true })
-      const blob = new Blob([changeData(workbook)])
-      const file = new File([blob], 'workbook.xlsx')
-      saveAs(file)
-    }
-
-    const changeData = (workbook) => {
-      const rawData = XLSX.write(workbook, { bookType: 'xlsx', bookSST: false, type: 'binary' })
-      const aryBuf = new ArrayBuffer(rawData.length)
-      const view = new Uint8Array(aryBuf)
-      for (var i = 0; i != rawData.length; ++i) view[i] = rawData.charCodeAt(i) & 0xFF
-      return aryBuf
-    }
-
     // util
+    const summaryMethod = ({ data }) => {
+      let sunMoney = data.reduce((acc, curr) => acc + parseInt(curr.money, 10) , 0)
+      return ['-', '-', '-', '-', sunMoney]
+    }
     const typeColor = (value) => {
       return value === '收入' ? 'green' : 'red'
     }
@@ -165,8 +178,11 @@ export default {
       allDataList,
       
       addItem,
+      deleteItem,
+
       exportExcel,
       typeColor,
+      summaryMethod,
     }
   }
 }
@@ -187,14 +203,21 @@ export default {
   height: 100%;
 }
 
-.table h3 {
-  padding: 12px 8px;
+.table {
+  height: calc(100% - 146px);
+  overflow: auto;
 }
 
 .form {
-  padding: 12px 16px;
+  margin: 0 auto;
+  height: 146px;
+  padding: 8px;
   color: #fff;
   background-color: #4c5560;
+}
+
+.form .title {
+  padding-left: 8px;
 }
 
 label {
@@ -202,13 +225,13 @@ label {
 }
 
 .form-item {
-  margin: 12px;
+  margin: 0px 8px;
   display: inline-block;
   width: 220px;
 }
 
 .form-button {
-  margin: 12px;
+  margin: 0px 8px;
   display: inline-flex;
   justify-content: space-between;
   width: 220px;
