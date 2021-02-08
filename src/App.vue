@@ -37,74 +37,26 @@
       el-input(v-model="detailForm.money" type="number" placeholder="輸入金額" size="small" @keyup.enter="addItem(detailForm)")
     .form-button
       el-button(@click="addItem(detailForm)" type="primary" size="small") 新增
-      label.upload 匯入
-        input.display(type="file" @change="handleFile")
-      el-button(@click="exportExcel" type="primary" size="small") 匯出
+      el-button(@click="saveData" type="primary" size="small") 保存
 </template>
 
 <script>
 import { ElMessage } from 'element-plus'
-import { ref, reactive, watchEffect, computed } from 'vue'
-import useWorkBook from '@/workbook'
+import { ref, reactive, watchEffect, computed, toRaw } from 'vue'
 import { getToday } from '@/helper'
-import { saveAs } from 'file-saver';
 import dayjs from 'dayjs'
-import XLSX from 'xlsx'
+import data from '../data.json'
 
+const jsonfile = window.require('jsonfile'); 
 const typeList = ['收入', '支出']
 const moneyTypeList = ['食', '衣', '住', '行', '娛樂', '其他']
-const thead = {
-  '日期': 'date',
-  '項目': 'name',
-  '類型': 'moneyType',
-  '收支': 'type',
-  '金額': 'money',
-}
 
 export default {
   name: 'App',
 
   setup () {
-    // create workbook
-    const workbook = useWorkBook()
-
-    // reader
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      const workbook = XLSX.read(event.target.result, { type: 'array' })
-      const data = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]])
-      allDataList.value = convertExcel(data)
-    }
-
-    // import
-    const file = ref(undefined)
-    const handleFile = async (event) => {
-      file.value = event.target.files[0]
-      await reader.readAsArrayBuffer(file.value)
-    }
-
-    // export
-    const exportData = computed(() => convertExcel(allDataList.value, 'out'))
-
-    const exportExcel = () => {
-      workbook.Sheets['sheet1'] = XLSX.utils.json_to_sheet(exportData.value, { header: Object.keys(thead), skipHeader: false })
-      workbook.SheetNames = Object.keys(workbook.Sheets)
-      const blob = new Blob([changeToBlob(workbook)])
-      const file = new File([blob], 'workbook.xlsx')
-      saveAs(file)
-    }
-
-    const changeToBlob = (workbook) => {
-      const rawData = XLSX.write(workbook, { bookType: 'xlsx', bookSST: false, type: 'binary' })
-      const aryBuf = new ArrayBuffer(rawData.length)
-      const view = new Uint8Array(aryBuf)
-      for (var i = 0; i != rawData.length; ++i) view[i] = rawData.charCodeAt(i) & 0xFF
-      return aryBuf
-    }
-
-    
     // data
-    const allDataList = ref([])
+    const allDataList = ref([ ...data ])
     const detailForm = reactive({
       date: getToday(),
       name: '',
@@ -113,7 +65,12 @@ export default {
       money: '',
     })
 
-    // add
+    // operate
+    const deleteItem = (row) => {
+      const targetIndex = allDataList.value.findIndex(item => item === row)
+      allDataList.value.splice(targetIndex, 1)
+    }
+
     const addItem = (formData) => {
       if (Object.values(detailForm).includes('')) return ElMessage.warning('內容輸入不完整')
       const item = { ...formData }
@@ -123,9 +80,10 @@ export default {
       clearDetailForm()
     }
 
-    const deleteItem = (row) => {
-      const targetIndex = allDataList.value.findIndex(item => item === row)
-      allDataList.value.splice(targetIndex, 1)
+    const saveData = () => {
+      jsonfile.writeFile('data.json', allDataList.value)
+        .then(() => ElMessage.success('保存成功'))
+        .catch(() => ElMessage.error('保存失敗'))
     }
 
     // clear
@@ -149,27 +107,8 @@ export default {
       return value === '收入' ? 'green' : 'red'
     }
 
-    const convertExcel = (value, mode = 'in') => {
-      if (mode === 'in') {
-        return value.map(item => {
-          const newItem = {}
-          Object.keys(thead).forEach(key => { newItem[thead[key]] = item[key] })
-          return newItem
-        })
-      } else if (mode === 'out') {
-        return value.map(item => {
-          const newItem = {}
-          Object.keys(thead).forEach(key => { newItem[key] = item[thead[key]] })
-          return newItem
-        })
-      }
-    }
-
     return {
       isClear,
-
-      file,
-      handleFile,
 
       typeList,
       moneyTypeList,
@@ -177,10 +116,12 @@ export default {
       detailForm,
       allDataList,
       
+      // operator
       addItem,
       deleteItem,
+      saveData,
 
-      exportExcel,
+      // other
       typeColor,
       summaryMethod,
     }

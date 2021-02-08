@@ -16,11 +16,10 @@
   "dependencies": {
     "dayjs": "^1.10.4",
     "element-plus": "^1.0.2-beta.31",
-    "file-saver": "^2.0.5",
+    "jsonfile": "^6.1.0",
     "pug": "^3.0.0",
     "pug-plain-loader": "^1.1.0",
-    "vue": "^3.0.0",
-    "xlsx": "^0.16.9"
+    "vue": "^3.0.0"
   },
   "devDependencies": {
     "@vue/cli-service": "~4.5.0",

@@ -7,6 +7,7 @@ import {
   ElButton,
   ElTable,
   ElTableColumn,
+  ElMessage,
 } from 'element-plus';
 import 'element-plus/lib/theme-chalk/index.css';
 import { createApp } from 'vue'
@@ -22,5 +23,6 @@ app.component(ElDatePicker.name, ElDatePicker)
 app.component(ElButton.name, ElButton)
 app.component(ElTable.name, ElTable)
 app.component(ElTableColumn.name, ElTableColumn)
+app.component(ElMessage.name, ElMessage)
 
 app.mount('#app')
