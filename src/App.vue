@@ -43,11 +43,11 @@
 <script>
 import { ElMessage } from 'element-plus'
 import { ref, reactive, watchEffect, computed, toRaw } from 'vue'
-import { getToday } from '@/helper'
 import dayjs from 'dayjs'
 import data from '../data.json'
 
-const jsonfile = window.require('jsonfile'); 
+const nowTime = new Date()
+const jsonfile = window.require('jsonfile')
 const typeList = ['收入', '支出']
 const moneyTypeList = ['食', '衣', '住', '行', '娛樂', '其他']
 
@@ -58,7 +58,7 @@ export default {
     // data
     const allDataList = ref([ ...data ])
     const detailForm = reactive({
-      date: getToday(),
+      date: nowTime,
       name: '',
       moneyType: '食',
       type: '支出',
