@@ -50,7 +50,7 @@ import data from '../data.json'
 const jsonfile = window.require('jsonfile'); 
 const typeList = ['收入', '支出']
 const moneyTypeList = ['食', '衣', '住', '行', '娛樂', '其他']
-console.log(111)
+
 export default {
   name: 'App',
 

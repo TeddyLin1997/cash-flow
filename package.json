@@ -17,6 +17,7 @@
     "dayjs": "^1.10.4",
     "element-plus": "^1.0.2-beta.31",
     "jsonfile": "^6.1.0",
+    "electron": "^9.0.0",
     "pug": "^3.0.0",
     "pug-plain-loader": "^1.1.0",
     "vue": "^3.0.0"
