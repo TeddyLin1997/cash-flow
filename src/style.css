@@ -1,0 +1,81 @@
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  text-align: left;
+  height: 100vh;
+  background-color: #edeef2;
+}
+
+.index {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.table {
+  height: calc(100% - 146px);
+  overflow: auto;
+}
+
+.form {
+  margin: 0 auto;
+  height: 146px;
+  padding: 8px;
+  color: #fff;
+  background-color: #4c5560;
+}
+
+.form .title {
+  padding-left: 8px;
+}
+
+label {
+  font-size: 14px;
+}
+
+.form-item {
+  margin: 0px 8px;
+  display: inline-block;
+  width: 220px;
+}
+
+.form-button {
+  margin: 0px 8px;
+  display: inline-flex;
+  justify-content: space-between;
+  width: 220px;
+}
+
+.upload {
+  padding: 0px 12px;
+  display: inline-block;
+  width: fit-content;
+  line-height: 32px;
+  background-color: #409EFF;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.display {
+  display: none;
+}
+
+.green {
+  color: #67C23A;
+}
+
+.red {
+  color: #F56C6C;
+}
+
+.tip {
+  padding: 0 12px;
+}
+
+.el-input {
+  width: 220px;
+}
+
+.el-checkbox {
+  color: #fff;
+}

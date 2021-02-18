@@ -37,7 +37,7 @@
       el-input(v-model="detailForm.money" type="number" placeholder="輸入金額" size="small" @keyup.enter="addItem(detailForm)")
     .form-button
       el-button(@click="addItem(detailForm)" type="primary" size="small") 新增
-      el-button(@click="saveData" type="primary" size="small") 保存
+
 </template>
 
 <script>
@@ -50,7 +50,7 @@ import data from '../data.json'
 const jsonfile = window.require('jsonfile'); 
 const typeList = ['收入', '支出']
 const moneyTypeList = ['食', '衣', '住', '行', '娛樂', '其他']
-
+console.log(111)
 export default {
   name: 'App',
 
@@ -65,6 +65,8 @@ export default {
       money: '',
     })
 
+    watchEffect(() => jsonfile.writeFile('data.json', allDataList.value))
+
     // operate
     const deleteItem = (row) => {
       const targetIndex = allDataList.value.findIndex(item => item === row)
@@ -78,12 +80,6 @@ export default {
       item.date = dayjs(item.date).format('YYYY/MM/DD')
       allDataList.value.push(item)
       clearDetailForm()
-    }
-
-    const saveData = () => {
-      jsonfile.writeFile('data.json', allDataList.value)
-        .then(() => ElMessage.success('保存成功'))
-        .catch(() => ElMessage.error('保存失敗'))
     }
 
     // clear
@@ -119,7 +115,6 @@ export default {
       // operator
       addItem,
       deleteItem,
-      saveData,
 
       // other
       typeColor,
@@ -128,87 +123,3 @@ export default {
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: left;
-  height: 100vh;
-  background-color: #edeef2;
-}
-
-.index {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
-
-.table {
-  height: calc(100% - 146px);
-  overflow: auto;
-}
-
-.form {
-  margin: 0 auto;
-  height: 146px;
-  padding: 8px;
-  color: #fff;
-  background-color: #4c5560;
-}
-
-.form .title {
-  padding-left: 8px;
-}
-
-label {
-  font-size: 14px;
-}
-
-.form-item {
-  margin: 0px 8px;
-  display: inline-block;
-  width: 220px;
-}
-
-.form-button {
-  margin: 0px 8px;
-  display: inline-flex;
-  justify-content: space-between;
-  width: 220px;
-}
-
-.upload {
-  padding: 0px 12px;
-  display: inline-block;
-  width: fit-content;
-  line-height: 32px;
-  background-color: #409EFF;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-.display {
-  display: none;
-}
-
-.green {
-  color: #67C23A;
-}
-
-.red {
-  color: #F56C6C;
-}
-
-.tip {
-  padding: 0 12px;
-}
-
-.el-input {
-  width: 220px;
-}
-
-.el-checkbox {
-  color: #fff;
-}
-</style>
