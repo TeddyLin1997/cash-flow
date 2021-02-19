@@ -1,9 +1,9 @@
 {
   "name": "cashflow",
-  "author": "ChrisLin1997",
-  "description": "trace spending tools",
   "version": "0.1.0",
   "private": true,
+  "description": "trace spending tools",
+  "author": "ChrisLin1997",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -14,12 +14,16 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@tailwindcss/postcss7-compat": "^2.0.2",
+    "autoprefixer": "^9",
     "dayjs": "^1.10.4",
     "electron": "^9.0.0",
     "element-plus": "^1.0.2-beta.31",
     "jsonfile": "^6.1.0",
+    "postcss": "^7",
     "pug": "^3.0.0",
     "pug-plain-loader": "^1.1.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "vue": "^3.0.0"
   },
   "devDependencies": {
@@ -27,6 +31,7 @@
     "@vue/compiler-sfc": "^3.0.0",
     "electron": "^9.0.0",
     "electron-devtools-installer": "^3.1.0",
-    "vue-cli-plugin-electron-builder": "~2.0.0-rc.5"
+    "vue-cli-plugin-electron-builder": "~2.0.0-rc.5",
+    "vue-cli-plugin-tailwind": "~2.0.6"
   }
 }

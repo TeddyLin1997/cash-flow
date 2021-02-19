@@ -5,10 +5,7 @@ export default {
   read: () => {
     return jsonfile.readFile(`${process.cwd()}tmp/data.json`)
       .then(res => res)
-      .catch(() => {
-        console.log('nofile')
-        return  []
-      })
+      .catch(() => [])
   },
 
 }
