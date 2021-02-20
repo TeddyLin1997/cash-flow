@@ -23,13 +23,13 @@
     main
       canvas(class="w-full" ref="profitElement")
 
-  article(class="mb-4 p-2 bg-secondary rounded-lg")
+  article(class="p-2 bg-secondary rounded-lg")
     header(class="mb-2 text-lg font-bold text-gray")
       i.el-icon-s-finance(class="mr-2")
       span 支出比例
-    main(class="relative")
+    main(class="mb-1 relative")
       canvas(class="w-full" ref="paymentElement")
-    footer(class="mx-4 py-1 border-t border-gray")
+    footer(class="mx-4 py-1 border-t border-gray h-detail")
       div(v-for="type of payTypeList" class="flex justify-between text-gray")
         div(class="w-16") {{ type.name }}
         div(class="w-20 text-right") {{ ((Math.abs(type.value) / pay) * 100).toFixed(2) }}%
