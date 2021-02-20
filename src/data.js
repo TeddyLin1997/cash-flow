@@ -8,7 +8,7 @@ export const allDataList = ref([])
 
 const income = computed(() => allDataList.value.filter((item) => item.type === typeList[0]).reduce((acc, curr) => acc + curr.money, 0))
 const pay = computed(() => allDataList.value.filter((item) => item.type === typeList[1]).reduce((acc, curr) => acc + Math.abs(curr.money), 0))
-const total = computed(() => income.value + pay.value)
+const total = computed(() => income.value - pay.value)
 
 export function useAssets () {
   return { income, pay, total }

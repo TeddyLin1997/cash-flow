@@ -12,7 +12,7 @@ div(class="flex flex-col justify-between items-center")
         div(
           v-for="column of thead"
           :class="[column.class, typeColor(column.attr, item[column.attr])]"
-        ) {{ item[column.attr] }}
+        ) {{ column.attr === 'money' ? comma(item[column.attr]) : item[column.attr] }}
   
   //- input
   div(class="w-full h-40 pb-2 px-4 flex text-gray justify-between bg-secondary rounded-lg text-sm")
@@ -40,10 +40,11 @@ div(class="flex flex-col justify-between items-center")
 </template>
 
 <script>
+import dayjs from 'dayjs'
 import { ElMessage } from 'element-plus'
 import { ref, reactive, watchEffect, computed, toRaw } from 'vue'
-import dayjs from 'dayjs'
 import { typeList, allDataList, operateData, assets } from '@/data'
+import { comma } from '@/helper'
 
 const thead = [
 { label: '日期', attr: 'date', class: 'w-28' },
@@ -122,6 +123,7 @@ export default {
 
       // other
       typeColor,
+      comma,
     }
   }
 }

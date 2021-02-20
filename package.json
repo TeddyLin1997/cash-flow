@@ -17,6 +17,7 @@
     "@tailwindcss/postcss7-compat": "^2.0.2",
     "autoprefixer": "^9",
     "dayjs": "^1.10.4",
+    "echarts": "^5.0.2",
     "electron": "^9.0.0",
     "element-plus": "^1.0.2-beta.31",
     "jsonfile": "^6.1.0",
