@@ -13,6 +13,8 @@ module.exports = {
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
+      
+      // darkmode
 
       white: '#fff',
       gray: '#e5e5e5',
@@ -20,9 +22,10 @@ module.exports = {
       primary: '#1e2125',
       secondary: '#404449',
       red: '#FD6162',
-      green: '#09A582',
+      green: '#38bdaa',
       orange: '#FF9900',
-      active: '#38bdaa',
+      active: '#58aecd',
+      
     },
     spacing: {
       px: '1px',

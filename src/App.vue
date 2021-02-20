@@ -1,6 +1,6 @@
 <template lang="pug">
 #app
-  layout
+  layout(class="h-screen")
 </template>
 
 <script>

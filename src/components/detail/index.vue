@@ -42,11 +42,9 @@ div(class="flex flex-col justify-between items-center")
 <script>
 import { ElMessage } from 'element-plus'
 import { ref, reactive, watchEffect, computed, toRaw } from 'vue'
-import operateData from './data'
 import dayjs from 'dayjs'
+import { typeList, allDataList, operateData, assets } from '@/data'
 
-const nowTime = new Date()
-const typeList = ['收入', '支出']
 const thead = [
 { label: '日期', attr: 'date', class: 'w-28' },
 { label: '項目', attr: 'name', class: 'w-28' },
@@ -61,52 +59,43 @@ export default {
 
   setup () {
     // data
-    const allDataList = ref([])
+    const nowTime = new Date()
     const detailForm = reactive({
       date: nowTime,
       name: '',
       moneyType: '食',
-      type: '支出',
+      type: typeList[1],
       money: '',
     })
 
-    const readData = async () => { allDataList.value = await operateData.read() }
-    readData()
-
     // operate
     const deleteItem = (row) => {
-      const targetIndex = allDataList.value.findIndex(item => item === row)
-      allDataList.value.splice(targetIndex, 1)
-      operateData.write(allDataList.value)
+      operateData.delete(row)
     }
 
     const addItem = (formData) => {
-      if (Object.values(detailForm).includes('')) return ElMessage.warning('內容輸入不完整')
-      const item = { ...formData }
-      if (item.type === '支出') item.money = -item.money
-      item.date = dayjs(item.date).format('YYYY/MM/DD')
-      allDataList.value.push(item)
-      operateData.write(allDataList.value)
+      if (Object.values(formData).includes('')) return ElMessage.warning('內容輸入不完整')
+
+      operateData.add(formData)
       clearDetailForm()
     }
 
     // clear
     const isClear = ref(false)
     const clearDetailForm = () => {
-      if (isClear.value) {
-        detailForm.date = ''
-        detailForm.name = ''
-        detailForm.moneyType = ''
-        detailForm.type = ''
-        detailForm.money = ''
-      }
+      if (!isClear.value) return
+      detailForm.date = ''
+      detailForm.name = ''
+      detailForm.moneyType = ''
+      detailForm.type = ''
+      detailForm.money = ''
     }
 
     // util
     const typeColor = (type, value) => {
       switch (type) {
         case 'type':
-          const mapping = { '收入': 'text-green', '支出': 'text-red', }
+          const mapping = { [typeList[0]]: 'text-green', [typeList[1]]: 'text-red', }
           return mapping[value]
           break;
         case 'money':
