@@ -1,26 +1,30 @@
 import { ref, computed } from 'vue'
 
-const jsonfile = window.require('jsonfile')
+// get system userdata path
+const electron = window.require('electron')
+const userDataPath = (electron.app || electron.remote.app).getPath('userData') + '/' + 'store.json'
 
+
+// userData
 export const typeList = ['收入', '支出']
-
 export const allDataList = ref([])
 
 const income = computed(() => allDataList.value.filter((item) => item.type === typeList[0]).reduce((acc, curr) => acc + curr.money, 0))
 const pay = computed(() => allDataList.value.filter((item) => item.type === typeList[1]).reduce((acc, curr) => acc + Math.abs(curr.money), 0))
 const total = computed(() => income.value - pay.value)
 
-export function useAssets () {
-  return { income, pay, total }
-}
+export const useAssets = () => ({ income, pay, total })
 
-export const operateData = {
+// store operate
+const jsonfile = window.require('jsonfile')
+
+export const operateStore = {
   write: function () { 
-    return jsonfile.writeFile(`${process.cwd()}tmp/data.json`, allDataList.value)
+    return jsonfile.writeFile(userDataPath, allDataList.value)
   },
 
   read: async function () {
-    allDataList.value = await jsonfile.readFile(`${process.cwd()}tmp/data.json`)
+    allDataList.value = await jsonfile.readFile(userDataPath)
       .then(res => res)
       .catch(() => [])
   },
@@ -40,4 +44,4 @@ export const operateData = {
   },
 }
 
-operateData.read()
+operateStore.read()

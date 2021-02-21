@@ -40,7 +40,7 @@
 
 <script>
 import { ref, onMounted, computed, watchEffect, watch } from 'vue'
-import { useAssets, allDataList } from '@/data'
+import { useAssets, allDataList } from '@/store'
 import { comma } from '@/helper'
 import * as echarts from 'echarts'
 

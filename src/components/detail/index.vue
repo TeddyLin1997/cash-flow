@@ -43,7 +43,7 @@ div(class="flex flex-col justify-between items-center")
 import dayjs from 'dayjs'
 import { ElMessage } from 'element-plus'
 import { ref, reactive, watchEffect, computed, toRaw } from 'vue'
-import { typeList, allDataList, operateData, assets } from '@/data'
+import { typeList, allDataList, operateStore, assets } from '@/store'
 import { comma } from '@/helper'
 
 const thead = [
@@ -71,13 +71,13 @@ export default {
 
     // operate
     const deleteItem = (row) => {
-      operateData.delete(row)
+      operateStore.delete(row)
     }
 
     const addItem = (formData) => {
       if (Object.values(formData).includes('')) return ElMessage.warning('內容輸入不完整')
 
-      operateData.add(formData)
+      operateStore.add(formData)
       clearDetailForm()
     }
 
