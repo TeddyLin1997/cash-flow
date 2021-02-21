@@ -1,5 +1,4 @@
 import {
-  ElCheckbox,
   ElInput,
   ElSelect,
   ElOption,
@@ -16,8 +15,6 @@ import App from './App.vue'
 import './assets/tailwind.css'
 
 const app = createApp(App)
-
-app.component(ElCheckbox.name, ElCheckbox)
 app.component(ElInput.name, ElInput)
 app.component(ElSelect.name, ElSelect)
 app.component(ElOption.name, ElOption)

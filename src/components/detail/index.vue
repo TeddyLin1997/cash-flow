@@ -7,7 +7,7 @@ div(class="flex flex-col justify-between items-center")
       div(v-for="column of thead" :key="column.attr" :class="column.class") {{ column.label }}
 
     section(class="px-5 h-table overflow-auto text-gray")
-      article(v-for="item of allDataList" class="relative h-14 flex justify-between items-center text-center border-primary border-b")
+      article(v-for="item of sortableData" class="relative h-14 flex justify-between items-center text-center border-primary border-b")
         i(@click="deleteItem(item)" class="el-icon-error absolute -left-3 cursor-pointer text-red hover:bg-white rounded-full")
         div(
           v-for="column of thead"
@@ -15,32 +15,36 @@ div(class="flex flex-col justify-between items-center")
         ) {{ column.attr === 'money' ? comma(item[column.attr]) : item[column.attr] }}
   
   //- input
-  div(class="w-full h-40 pb-2 px-4 flex text-gray justify-between bg-secondary rounded-lg text-sm")
-    div(class="flex flex-col justify-evenly")
+  div(class="w-full h-40 pb-2 px-4 flex flex-wrap items-center text-gray bg-secondary rounded-lg text-sm")
+    div(class="mr-6")
       div 日期
       el-date-picker(v-model="detailForm.date" size="small" placeholder="選擇日期")
-      div 項目
-      el-input(v-model="detailForm.name" size="small" placeholder="請輸入" @keypress.enter="addItem(detailForm)")
-    div(class="flex flex-col justify-evenly")
+    
+    div(class="mr-6")
+      div 收支
+      el-select(v-model="detailForm.type" @change="handleType" size="small" placeholder="請選擇")
+        el-option(v-for="item of typeList" :value="item")
+
+    div(class="mr-6")
       div 類型
-      el-select(v-model="detailForm.moneyType" size="small" placeholder="請選擇")
-        el-option(v-for="item of moneyTypeList" :value="item")
+      el-select(v-model="detailForm.category" size="small" placeholder="請選擇")
+        el-option(v-for="item of categoryList" :value="item")
+
+    div(class="mr-16")
+      div 項目
+      el-input(v-model="detailForm.name" ref="inputElement" size="small" placeholder="請輸入" @keypress.enter="addItem(detailForm)")
+
+    div(class="mr-6")
       div 金額
       el-input(v-model="detailForm.money" type="number" placeholder="輸入金額" size="small" @keyup.enter="addItem(detailForm)")
-    div(class="flex flex-col justify-evenly")
-      div 收支
-      el-select(v-model="detailForm.type" size="small" placeholder="請選擇")
-        el-option(v-for="item of typeList" :value="item")
-      
+
+    div   
       div 操作
-      div
-        el-button(@click="addItem(detailForm)" class="bg-active border-none focus:bg-active hover:bg-active" type="primary" size="small") 新增
-        el-checkbox(v-model="isClear" class="ml-4 text-white") 新增後清除
+      el-button(@click="addItem(detailForm)" class="bg-active border-none focus:bg-active hover:bg-active" type="primary" size="small") 新增
 
 </template>
 
 <script>
-import dayjs from 'dayjs'
 import { ElMessage } from 'element-plus'
 import { ref, reactive, watchEffect, computed, toRaw } from 'vue'
 import { typeList, allDataList, operateStore, assets } from '@/store'
@@ -49,11 +53,10 @@ import { comma } from '@/helper'
 const thead = [
 { label: '日期', attr: 'date', class: 'w-28' },
 { label: '項目', attr: 'name', class: 'w-28' },
-{ label: '類型', attr: 'moneyType', class: 'w-10' },
+{ label: '類型', attr: 'category', class: 'w-10' },
 { label: '收支', attr: 'type', class: 'w-10' },
 { label: '金額', attr: 'money', class: 'pr-2 w-32 text-right font-bold' },
 ]
-const moneyTypeList = ['食', '衣', '住', '行', '娛樂', '其他']
 
 export default {
   name: 'detail',
@@ -64,9 +67,19 @@ export default {
     const detailForm = reactive({
       date: nowTime,
       name: '',
-      moneyType: '食',
+      category: '食',
       type: typeList[1],
       money: '',
+    })
+
+    const sortableData = computed(() => {
+      return allDataList.value.sort((a, b) => a.timeStamp - b.timeStamp )
+    })
+
+    const categoryList = computed(() => {
+      const payCategory = ['食', '衣', '住', '行', '娛樂', '其他']
+      const incomeCategory = ['薪資', '投資', '其他']
+      return detailForm.type === typeList[0] ? incomeCategory : payCategory
     })
 
     // operate
@@ -82,14 +95,15 @@ export default {
     }
 
     // clear
-    const isClear = ref(false)
+    const inputElement = ref(null)
     const clearDetailForm = () => {
-      if (!isClear.value) return
-      detailForm.date = ''
       detailForm.name = ''
-      detailForm.moneyType = ''
-      detailForm.type = ''
       detailForm.money = ''
+      inputElement.value.focus()
+    }
+
+    const handleType = () => {
+      detailForm.category = categoryList.value[0]
     }
 
     // util
@@ -107,19 +121,21 @@ export default {
     }
 
     return {
+      // default list
       thead,
-
-      isClear,
-
       typeList,
-      moneyTypeList,
+      categoryList,
+
+      inputElement,
 
       detailForm,
-      allDataList,
+      sortableData,
       
       // operator
       addItem,
       deleteItem,
+
+      handleType,
 
       // other
       typeColor,

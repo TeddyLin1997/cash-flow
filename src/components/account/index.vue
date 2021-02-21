@@ -83,8 +83,8 @@ export default {
     const payTypeList = computed(() => {
       const list = []
       allDataList.value.filter(item => item.type === '支出').forEach(item => {
-        const target = list.find(node => node.name === item.moneyType)
-        if (!target) list.push({ value: item.money, name: item.moneyType })
+        const target = list.find(node => node.name === item.category)
+        if (!target) list.push({ value: item.money, name: item.category })
         else target.value += item.money
       })
       return list

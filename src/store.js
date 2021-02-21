@@ -1,9 +1,9 @@
 import { ref, computed } from 'vue'
-
-// get system userdata path
 const electron = window.require('electron')
-const userDataPath = (electron.app || electron.remote.app).getPath('userData') + '/' + 'store.json'
+const jsonfile = window.require('jsonfile')
 
+// system userdata path
+const userDataPath = (electron.app || electron.remote.app).getPath('userData') + '/' + 'store.json'
 
 // userData
 export const typeList = ['收入', '支出']
@@ -16,8 +16,6 @@ const total = computed(() => income.value - pay.value)
 export const useAssets = () => ({ income, pay, total })
 
 // store operate
-const jsonfile = window.require('jsonfile')
-
 export const operateStore = {
   write: function () { 
     return jsonfile.writeFile(userDataPath, allDataList.value)
@@ -36,9 +34,15 @@ export const operateStore = {
   },
 
   add: function (row) {
-    const item = { ...row }
-    item.money = item.type === typeList[0] ? +item.money : -item.money
-    item.date = dayjs(item.date).format('YYYY/MM/DD')
+    const item = {
+      timeStamp: dayjs(row.date).valueOf(),
+      date: dayjs(row.date).format('YYYY/MM/DD'),
+      category: row.category,
+      type: row.type,
+      name: row.name,
+      money: row.type === typeList[0] ? +row.money : -row.money
+    }
+
     allDataList.value.push(item)
     this.write()
   },

@@ -24,7 +24,7 @@ module.exports = {
       red: '#FD6162',
       green: '#38bdaa',
       orange: '#FF9900',
-      active: '#58aecd',
+      active: '#009eef',
       
     },
     spacing: {
