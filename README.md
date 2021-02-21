@@ -1,5 +1,7 @@
-# trace-spending
+## cash-flow
+
+- this is a desktop app for trace spending
 
 - use Vue + electron to build desktop-app
 
-- this is a Excel trace spending tool
+[Dowload URL](https://drive.google.com/drive/folders/1bqt2MGuh2_LRbT4TtHzn1IIvnCN9Dnxk)
