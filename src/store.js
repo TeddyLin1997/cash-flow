@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { saveAs } from 'file-saver'
 import XLSX from 'xlsx'
 
@@ -59,24 +59,27 @@ export const operateStore = {
     this.write()
   },
 
-  export: function () {
+  export: function (dataList) {
     // convert key
-    const exportData = allDataList.value.map(item => {
+    const exportData = dataList.map(item => {
       const newItem = {}
       thead.forEach(node => { newItem[node.label] = item[node.attr] })
       return newItem
     })
 
     // create excel workbook
+    const date = new Date()
+    const sheetName = `${date.getFullYear()}年${date.getMonth() + 1}月`
+
     const workbook = {
-      SheetNames: [ 'sheet1' ],
+      SheetNames: [ sheetName ],
       Sheets: {
-        'sheet1': XLSX.utils.json_to_sheet(exportData, { header: thead.map(item => item.label), skipHeader: false })
+        [sheetName]: XLSX.utils.json_to_sheet(exportData, { header: thead.map(item => item.label), skipHeader: false })
       },
     }
 
     // create file
-    const file = new File([new Blob([changeToBlob(workbook)])], 'workbook.xlsx')
+    const file = new File([new Blob([changeToBlob(workbook)])], '記帳收支簿.xlsx')
     saveAs(file)
 
     // convet to excel data

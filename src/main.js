@@ -6,7 +6,7 @@ import {
   ElButton,
   ElTable,
   ElTableColumn,
-  // ElMessage,
+  ElPopover
 } from 'element-plus';
 import 'element-plus/lib/theme-chalk/index.css';
 
@@ -22,6 +22,6 @@ app.component(ElDatePicker.name, ElDatePicker)
 app.component(ElButton.name, ElButton)
 app.component(ElTable.name, ElTable)
 app.component(ElTableColumn.name, ElTableColumn)
-// app.component(ElMessage.name, ElMessage)
+app.component(ElPopover.name, ElPopover)
 
 app.mount('#app')
