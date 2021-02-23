@@ -1,6 +1,18 @@
 import { ref, computed } from 'vue'
+import { saveAs } from 'file-saver'
+import XLSX from 'xlsx'
+
+// node 環境才能使用模組
 const electron = window.require('electron')
 const jsonfile = window.require('jsonfile')
+
+export const thead = [
+  { label: '日期', attr: 'date', class: 'w-28' },
+  { label: '項目', attr: 'name', class: 'w-28' },
+  { label: '類型', attr: 'category', class: 'w-10' },
+  { label: '收支', attr: 'type', class: 'w-10' },
+  { label: '金額', attr: 'money', class: 'pr-2 w-32 text-right font-bold' },
+]
 
 // system userdata path
 const userDataPath = (electron.app || electron.remote.app).getPath('userData') + '/' + 'store.json'
@@ -45,6 +57,36 @@ export const operateStore = {
 
     allDataList.value.push(item)
     this.write()
+  },
+
+  export: function () {
+    // convert key
+    const exportData = allDataList.value.map(item => {
+      const newItem = {}
+      thead.forEach(node => { newItem[node.label] = item[node.attr] })
+      return newItem
+    })
+
+    // create excel workbook
+    const workbook = {
+      SheetNames: [ 'sheet1' ],
+      Sheets: {
+        'sheet1': XLSX.utils.json_to_sheet(exportData, { header: thead.map(item => item.label), skipHeader: false })
+      },
+    }
+
+    // create file
+    const file = new File([new Blob([changeToBlob(workbook)])], 'workbook.xlsx')
+    saveAs(file)
+
+    // convet to excel data
+    function changeToBlob (workbook) {
+      const rawData = XLSX.write(workbook, { bookType: 'xlsx', bookSST: false, type: 'binary' })
+      const aryBuf = new ArrayBuffer(rawData.length)
+      const view = new Uint8Array(aryBuf)
+      for (var i = 0; i != rawData.length; ++i) view[i] = rawData.charCodeAt(i) & 0xFF
+      return aryBuf
+    }
   },
 }
 

@@ -8,7 +8,7 @@ div(class="flex flex-col justify-between items-center")
 
     section(class="px-5 h-table overflow-auto text-gray")
       article(v-for="item of sortableData" class="relative h-14 flex justify-between items-center text-center border-primary border-b")
-        i(@click="deleteItem(item)" class="el-icon-error absolute -left-3 cursor-pointer text-red hover:bg-white rounded-full")
+        i(@click="operateStore.delete(item)" class="el-icon-error absolute -left-3 cursor-pointer text-red hover:bg-white rounded-full")
         div(
           v-for="column of thead"
           :class="[column.class, typeColor(column.attr, item[column.attr])]"
@@ -32,7 +32,7 @@ div(class="flex flex-col justify-between items-center")
 
     div(class="mr-16")
       div 項目
-      el-input(v-model="detailForm.name" ref="inputElement" size="small" placeholder="請輸入" @keypress.enter="addItem(detailForm)")
+      el-input(v-model="detailForm.name" ref="inputElement" size="small" placeholder="請輸入")
 
     div(class="mr-6")
       div 金額
@@ -40,23 +40,16 @@ div(class="flex flex-col justify-between items-center")
 
     div   
       div 操作
-      el-button(@click="addItem(detailForm)" class="bg-active border-none focus:bg-active hover:bg-active" type="primary" size="small") 新增
+      el-button(@click="addItem(detailForm)" class="bg-active border-none focus:bg-active focus:outline-none hover:bg-active" type="primary" size="small") 新增
+      el-button(@click="operateStore.export()" class="bg-active border-none focus:bg-active focus:outline-none hover:bg-active" type="primary" size="small") 匯出Excel
 
 </template>
 
 <script>
 import { ElMessage } from 'element-plus'
 import { ref, reactive, watchEffect, computed, toRaw } from 'vue'
-import { typeList, allDataList, operateStore, assets } from '@/store'
+import { thead, typeList, allDataList, operateStore, assets } from '@/store'
 import { comma } from '@/helper'
-
-const thead = [
-{ label: '日期', attr: 'date', class: 'w-28' },
-{ label: '項目', attr: 'name', class: 'w-28' },
-{ label: '類型', attr: 'category', class: 'w-10' },
-{ label: '收支', attr: 'type', class: 'w-10' },
-{ label: '金額', attr: 'money', class: 'pr-2 w-32 text-right font-bold' },
-]
 
 export default {
   name: 'detail',
@@ -83,10 +76,6 @@ export default {
     })
 
     // operate
-    const deleteItem = (row) => {
-      operateStore.delete(row)
-    }
-
     const addItem = (formData) => {
       if (Object.values(formData).includes('')) return ElMessage.warning('內容輸入不完整')
 
@@ -133,7 +122,7 @@ export default {
       
       // operator
       addItem,
-      deleteItem,
+      operateStore,
 
       handleType,
 
