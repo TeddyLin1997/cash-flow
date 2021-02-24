@@ -6,6 +6,9 @@ div(class="flex flex-col justify-between items-center")
     header(class="py-2 px-4 h-12 flex justify-between items-center bg-active rounded-t-lg text-white")
       div(v-for="column of thead" :key="column.attr" :class="column.class") {{ column.label }}
 
+    //- 避免打包時優化tailwind class
+    div(class="hidden pr-2 w-32 w-10 w-28 text-right font-bold")
+
     section(class="px-5 h-table overflow-auto text-gray")
       article(v-for="item of sortableData" class="relative h-14 flex justify-between items-center text-center border-primary border-b")
         i(@click="operateStore.delete(item)" class="el-icon-error absolute -left-3 cursor-pointer text-red hover:bg-white rounded-full")
