@@ -22,7 +22,7 @@ div(class="py-2 px-4 w-full flex flex-col justify-between bg-secondary border bo
 
 <script>
 import { ref, reactive, computed } from 'vue'
-import { typeList, categoryList, operateStore } from '@/store'
+import { date, typeList, categoryList, operateStore } from '@/store'
 import { ElMessage } from 'element-plus'
 
 export default {
@@ -30,9 +30,8 @@ export default {
 
   setup () {
     // data
-    const nowTime = new Date()
     const detailForm = reactive({
-      date: nowTime,
+      date: date,
       name: '',
       category: '食',
       type: typeList[1],

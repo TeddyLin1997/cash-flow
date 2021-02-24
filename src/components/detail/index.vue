@@ -6,7 +6,7 @@ div(class="flex flex-col justify-between items-center")
     header(class="py-2 px-4 h-12 flex justify-between items-center bg-active rounded-t-lg text-white")
       div(v-for="column of thead" :key="column.attr" :class="column.class") {{ column.label }}
 
-    section(ref="tableList" class="px-5 h-table overflow-auto text-gray")
+    section(class="px-5 h-table overflow-auto text-gray")
       article(v-for="item of sortableData" class="relative h-14 flex justify-between items-center text-center border-primary border-b")
         i(@click="operateStore.delete(item)" class="el-icon-error absolute -left-3 cursor-pointer text-red hover:bg-white rounded-full")
         div(
@@ -37,11 +37,6 @@ export default {
       return allDataList.value.sort((a, b) => a.timeStamp - b.timeStamp )
     })
 
-    // const tableList = ref(null)
-    // const scrollBottom = () => {
-    //   tableList.value && tableList.value.scrollTo({ top: tableList.value.scrollHeight, behavior: "smooth" })
-    // }
-
     // util
     const typeColor = (type, value) => {
       switch (type) {
@@ -57,8 +52,6 @@ export default {
     }
 
     return {
-      // tableList,
-      // scrollBottom,
       thead,
       sortableData,
       operateStore,

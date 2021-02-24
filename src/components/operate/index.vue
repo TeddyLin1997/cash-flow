@@ -7,19 +7,18 @@ section(class="flex w-full px-2 text-gray text-center")
 
     component(:is="item.components")
     
-  
 </template>
 
 <script>
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
 import AddInput from './add-input'
 import BatchDelete from './batch-delete'
 import ExportExcel from './export-excel'
 
 const operateList = [
   { value: 'add', components: 'add-input', icon: 'el-icon-plus', width: 256 },
-  { value: 'delete', components: 'batch-delete', icon: 'el-icon-delete', width: 256 },
   { value: 'export', components: 'export-excel', icon: 'el-icon-download', width: 256 },
+  { value: 'delete', components: 'batch-delete', icon: 'el-icon-delete', width: 60 },
 ]
 export default {
   name: 'operate',

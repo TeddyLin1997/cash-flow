@@ -1,10 +1,12 @@
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { saveAs } from 'file-saver'
 import XLSX from 'xlsx'
 
 // node 環境才能使用模組
 const electron = window.require('electron')
 const jsonfile = window.require('jsonfile')
+
+export const date = new Date()
 
 export const thead = [
   { label: '日期', attr: 'date', class: 'w-28' },
@@ -59,6 +61,11 @@ export const operateStore = {
     this.write()
   },
 
+  clear: function () {
+    allDataList.value = []
+    this.write()
+  },
+
   export: function (dataList) {
     // convert key
     const exportData = dataList.map(item => {
@@ -68,7 +75,6 @@ export const operateStore = {
     })
 
     // create excel workbook
-    const date = new Date()
     const sheetName = `${date.getFullYear()}年${date.getMonth() + 1}月`
 
     const workbook = {
