@@ -1,3 +1,5 @@
+![](http://estruyf-github.azurewebsites.net/api/VisitorHit?user=ChrisLin1997&repo=cash-flow&countColorcountColor&countColor=%2309A582)
+
 ## cash-flow
 
 - this is a desktop app for trace spending
