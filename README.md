@@ -4,7 +4,7 @@
 
 - this is a desktop app for trace spending
 
-- use Vue + electron to build desktop-app
+- use Vue3 + electron to build desktop-app
 
 - [Dowload URL](https://drive.google.com/drive/folders/1MZcM972Z8GuymjeUBp3Rt89ZYR3nnS6I)
 
